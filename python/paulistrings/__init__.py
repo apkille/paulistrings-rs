@@ -9,8 +9,7 @@ re-exports the high-level classes and exposes the ``gates``, ``noise``, and
 ``PauliString`` is one ``IXYZ`` string with no coefficient attached, and
 ``p(label)`` is the shorthand that builds one from its label.
 
-``pt(label, sites)`` builds a ``PauliTerms``, that is, sparse terms with no qubit count, bound to a register by 
-``PauliSum(num_qubits, terms)`` or ``Circuit.trotter``.
+``pt(label, sites)`` builds a ``PauliTerms``: sparse terms with no qubit count, bound to a register by ``PauliSum(num_qubits, terms)`` or ``Circuit.trotter``.
 ``lattices`` and ``models`` build common Hamiltonians from them, and ``trotter`` turns one into a circuit.
 
 ``PauliSum.propagate`` also runs the sum split across partitions: ``partitions=``
