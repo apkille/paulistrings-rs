@@ -50,7 +50,6 @@ impl PauliTerms {
             .iter()
             .map(|s| {
                 Ok(Term {
-                    paulis: parse_sparse("p", label, s)?.into(),
                     paulis: parse_sparse("pt", label, s)?.into(),
                     coeff: Complex64::new(1.0, 0.0),
                 })

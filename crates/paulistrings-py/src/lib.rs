@@ -23,6 +23,8 @@ mod pauli_string;
 mod sum;
 mod truncation;
 mod truncation_spec;
+mod sparse;
+mod terms;
 
 use pyo3::prelude::*;
 use std::sync::OnceLock;
@@ -137,6 +139,7 @@ fn _paulistrings(py: Python<'_>, m: &Bound<'_, PyModule>) -> PyResult<()> {
 
     m.add_class::<pauli_string::PauliString>()?;
     m.add_class::<sum::PauliSum>()?;
+    m.add_class::<terms::PauliTerms>()?;
     m.add_class::<sum::PropagationStats>()?;
     m.add_class::<sum::PartitionStats>()?;
     #[cfg(feature = "cuda")]

@@ -2,6 +2,7 @@
 //! ARCHITECTURE.md §Width and ARCHITECTURE.md §Python-Bindings.
 
 use crate::sparse::{sparse_key, Axis};
+use crate::sum::{extract_complex, parse_pauli_key, PauliSum, PauliSumImpl};
 use num_complex::Complex64;
 use paulistrings::pauli_string::PauliString as CorePauliString;
 use pyo3::exceptions::PyValueError;
@@ -19,14 +20,6 @@ pub enum PauliStringImpl {
     W4(CorePauliString<4>),
     W8(CorePauliString<8>),
     W16(CorePauliString<16>),
-}
-
-/// Which single-site constructor a `PauliString.x/y/z` call wants, chosen before the width is known.
-#[derive(Clone, Copy)]
-enum Axis {
-    X,
-    Y,
-    Z,
 }
 
 /// Which product a binary method reports the coefficient of.
