@@ -32,7 +32,7 @@ impl Term {
 
 /// An ordered list of sparse Pauli terms `c·P`, not bound to a qubit count.
 ///
-/// Built by `p(label, sites)` and combined with `+`, `-` and scaling by a number.
+/// Built by `pt(label, sites)` and combined with `+`, `-` and scaling by a number.
 /// Order and repeated strings are kept, since the list is also the gate list of `Circuit.trotter`.
 /// `PauliSum(num_qubits, terms)` binds it to a register and merges repeated strings.
 /// Iterating yields `(label, sites, coefficient)` triples.
@@ -43,7 +43,7 @@ pub struct PauliTerms {
 }
 
 impl PauliTerms {
-    /// `p(label, sites)`: one coefficient-1 term per site tuple.
+    /// `pt(label, sites)`: one coefficient-1 term per site tuple.
     pub(crate) fn broadcast(label: &str, sites: &Bound<'_, PyAny>) -> PyResult<Self> {
         let k = label.chars().count();
         let terms = expand_sites(extract_sites(sites)?, k)

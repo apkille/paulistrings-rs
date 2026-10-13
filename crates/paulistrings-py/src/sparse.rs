@@ -1,5 +1,5 @@
 //! Sparse Pauli strings: a label of `X`/`Y`/`Z` paired with distinct sites, identity elsewhere.
-//! Shared by `p(label, sites)`, `PauliTerms`, `pauli_rotation` and the single-site `PauliString` constructors.
+//! Shared by `pt(label, sites)`, `PauliTerms`, `pauli_rotation` and the single-site `PauliString` constructors.
 
 use paulistrings::pauli_string::PauliString;
 use pyo3::exceptions::{PyTypeError, PyValueError};
@@ -157,11 +157,11 @@ mod tests {
     #[test]
     fn parse_sparse_rejects_identity_repeats_and_mismatch() {
         assert_eq!(
-            parse_sparse_impl("p", "XZ", &[4, 1]).unwrap(),
+            parse_sparse_impl("pt", "XZ", &[4, 1]).unwrap(),
             vec![(4, Axis::X), (1, Axis::Z)]
         );
-        assert!(parse_sparse_impl("p", "ZI", &[0, 1]).unwrap_err().contains("unexpected Pauli"));
-        assert!(parse_sparse_impl("p", "ZZ", &[3, 3]).unwrap_err().contains("appears twice"));
-        assert!(parse_sparse_impl("p", "ZZ", &[0]).unwrap_err().contains("same length"));
+        assert!(parse_sparse_impl("pt", "ZI", &[0, 1]).unwrap_err().contains("unexpected Pauli"));
+        assert!(parse_sparse_impl("pt", "ZZ", &[3, 3]).unwrap_err().contains("appears twice"));
+        assert!(parse_sparse_impl("pt", "ZZ", &[0]).unwrap_err().contains("same length"));
     }
 }

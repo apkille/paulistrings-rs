@@ -1,4 +1,4 @@
-"""Bond lists of common lattices, for ``p(label, bonds)``.
+"""Bond lists of common lattices, for ``pt(label, bonds)``.
 
 Sites are numbered from 0; a bond is a pair of sites coupled by a two-site term.
 """
