@@ -13,26 +13,12 @@ use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 use pyo3::types::PyDict;
 
-/// Which single-qubit Pauli a [`ChannelSpec::PauliRotationN`] generator carries at one qubit.
-/// Deliberately no `I`: identity positions are expressed by omitting the qubit, so every generator has exactly one spelling.
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum Axis {
-    X,
-    Y,
-    Z,
-}
+use crate::sparse::{sparse_key, Axis};
 
-impl Axis {
-    /// The axis as its Pauli character, for the `"pauli"` field of a serialized
-    /// `pauli_rotation` gate.
-    fn as_char(self) -> char {
-        match self {
-            Self::X => 'X',
-            Self::Y => 'Y',
-            Self::Z => 'Z',
-        }
-    }
-}
+// In `ChannelSpec::push_into`, replacing the bit-plane loop:
+            Self::PauliRotationN { theta, paulis } => {
+                circuit.push(PauliRotation::new(sparse_key::<W>(paulis), *theta));
+            }
 
 /// An `N x N` complex matrix as the schema's JSON-native form: rows of `[re, im]` pairs.
 fn matrix_to_json<const N: usize>(m: &[[Complex64; N]; N]) -> Vec<Vec<Vec<f64>>> {

@@ -1933,7 +1933,7 @@ impl PauliSum {
 const PREVIEW_TERMS: usize = 4;
 
 /// `0.25` for a real coefficient, `(0.25+0.5j)` otherwise — dropping the `+0j` tail Python's own `complex.__repr__` always carries, since most coefficients in this library are real.
-fn format_coeff(c: Complex64) -> String {
+pub(crate) fn format_coeff(c: Complex64) -> String {
     if c.im == 0.0 {
         format!("{}", c.re)
     } else {

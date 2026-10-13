@@ -35,6 +35,7 @@ from ._paulistrings import (
     numa_nodes,
     p,
     reset_log_cache,
+    PauliTerms,
 )
 from . import gates, noise, truncation
 from . import interop
@@ -58,6 +59,10 @@ __all__ = [
     "cuda_available",
     "numa_nodes",
     "reset_log_cache",
+    "PauliTerms",
+    "lattices",
+    "models",
+    "trotter",
 ]
 
 if hasattr(_paulistrings, "GpuPauliSum"):
