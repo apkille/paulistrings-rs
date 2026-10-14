@@ -166,7 +166,7 @@ impl PauliTerms {
     }
 
     fn __iter__<'py>(&self, py: Python<'py>) -> PyResult<Bound<'py, PyIterator>> {
-        let items = self.terms.iter().map(|t| {
+        let items = self.terms.iter().map(|t| -> PyObject {
             let label: String = t.paulis.iter().map(|&(_, axis)| axis.as_char()).collect();
             let sites = PyTuple::new_bound(py, t.paulis.iter().map(|&(q, _)| q));
             (label, sites, t.coeff).into_py(py)
