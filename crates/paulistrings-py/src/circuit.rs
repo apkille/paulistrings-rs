@@ -67,7 +67,11 @@ impl Circuit {
     /// Push every spec or none: all qubit indices are checked before the first push, so a bad index in a broadcast leaves the circuit untouched.
     fn push_all(&mut self, specs: Vec<ChannelSpec>) -> PyResult<()> {
         let n = self.inner.num_qubits();
-        if let Some(q) = specs.iter().map(ChannelSpec::max_qubit).find(|&q| q as usize >= n) {
+        if let Some(q) = specs
+            .iter()
+            .map(ChannelSpec::max_qubit)
+            .find(|&q| q as usize >= n)
+        {
             return Err(PyValueError::new_err(format!(
                 "qubit index {q} is out of range for a {n}-qubit circuit"
             )));
@@ -283,7 +287,12 @@ impl Circuit {
     }
 
     /// A rotation `exp(-i·θ·P/2)` per site tuple in `qubits`; see `gates.pauli_rotation` for the argument convention.
-    fn pauli_rotation(&mut self, pauli: &str, qubits: &Bound<'_, PyAny>, theta: f64) -> PyResult<()> {
+    fn pauli_rotation(
+        &mut self,
+        pauli: &str,
+        qubits: &Bound<'_, PyAny>,
+        theta: f64,
+    ) -> PyResult<()> {
         let specs = expand_sites(extract_sites(qubits)?, pauli.chars().count())
             .iter()
             .map(|sites| crate::gates::pauli_rotation_spec(pauli, sites, theta))
@@ -300,7 +309,9 @@ impl Circuit {
     }
 
     fn amplitude_damping(&mut self, gamma: f64, qubits: &Bound<'_, PyAny>) -> PyResult<()> {
-        self.push_each(qubits, |qubit| Ok(ChannelSpec::AmplitudeDamping { gamma, qubit }))
+        self.push_each(qubits, |qubit| {
+            Ok(ChannelSpec::AmplitudeDamping { gamma, qubit })
+        })
     }
 
     /// A general single-qubit Pauli channel on each of `qubits`; see
@@ -312,7 +323,9 @@ impl Circuit {
         pz: f64,
         qubits: &Bound<'_, PyAny>,
     ) -> PyResult<()> {
-        self.push_each(qubits, |qubit| crate::noise::pauli_channel_spec(px, py, pz, qubit))
+        self.push_each(qubits, |qubit| {
+            crate::noise::pauli_channel_spec(px, py, pz, qubit)
+        })
     }
 
     /// Uniform two-qubit depolarizing noise on each `(q0, q1)` pair; see

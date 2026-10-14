@@ -20,11 +20,11 @@ mod gpu;
 mod mpi;
 mod noise;
 mod pauli_string;
+mod sparse;
 mod sum;
+mod terms;
 mod truncation;
 mod truncation_spec;
-mod sparse;
-mod terms;
 
 use pyo3::prelude::*;
 use std::sync::OnceLock;

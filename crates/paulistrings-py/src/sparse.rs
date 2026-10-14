@@ -44,11 +44,13 @@ pub(crate) fn extract_sites(obj: &Bound<'_, PyAny>) -> PyResult<Sites> {
     if let Ok(flat) = obj.extract::<Vec<u32>>() {
         return Ok(Sites::Flat(flat));
     }
-    obj.extract::<Vec<Vec<u32>>>().map(Sites::Nested).map_err(|_| {
-        PyTypeError::new_err(
-            "sites must be an int, a sequence of ints, or a sequence of int sequences",
-        )
-    })
+    obj.extract::<Vec<Vec<u32>>>()
+        .map(Sites::Nested)
+        .map_err(|_| {
+            PyTypeError::new_err(
+                "sites must be an int, a sequence of ints, or a sequence of int sequences",
+            )
+        })
 }
 
 /// The site tuples `sites` names for a `k`-character label.
@@ -145,7 +147,10 @@ mod tests {
     #[test]
     fn expand_sites_follows_the_three_cases() {
         assert_eq!(expand_sites(Sites::One(3), 1), vec![vec![3]]);
-        assert_eq!(expand_sites(Sites::Flat(vec![0, 1, 2]), 1), vec![vec![0], vec![1], vec![2]]);
+        assert_eq!(
+            expand_sites(Sites::Flat(vec![0, 1, 2]), 1),
+            vec![vec![0], vec![1], vec![2]]
+        );
         assert_eq!(expand_sites(Sites::Flat(vec![0, 1]), 2), vec![vec![0, 1]]);
         assert_eq!(
             expand_sites(Sites::Nested(vec![vec![0, 1], vec![1, 2]]), 2),
@@ -160,8 +165,14 @@ mod tests {
             parse_sparse_impl("pt", "XZ", &[4, 1]).unwrap(),
             vec![(4, Axis::X), (1, Axis::Z)]
         );
-        assert!(parse_sparse_impl("pt", "ZI", &[0, 1]).unwrap_err().contains("unexpected Pauli"));
-        assert!(parse_sparse_impl("pt", "ZZ", &[3, 3]).unwrap_err().contains("appears twice"));
-        assert!(parse_sparse_impl("pt", "ZZ", &[0]).unwrap_err().contains("same length"));
+        assert!(parse_sparse_impl("pt", "ZI", &[0, 1])
+            .unwrap_err()
+            .contains("unexpected Pauli"));
+        assert!(parse_sparse_impl("pt", "ZZ", &[3, 3])
+            .unwrap_err()
+            .contains("appears twice"));
+        assert!(parse_sparse_impl("pt", "ZZ", &[0])
+            .unwrap_err()
+            .contains("same length"));
     }
 }

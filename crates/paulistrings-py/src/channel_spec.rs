@@ -13,7 +13,7 @@ use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 use pyo3::types::PyDict;
 
-use crate::sparse::{sparse_key, Axis};       
+use crate::sparse::{sparse_key, Axis};
 
 /// An `N x N` complex matrix as the schema's JSON-native form: rows of `[re, im]` pairs.
 fn matrix_to_json<const N: usize>(m: &[[Complex64; N]; N]) -> Vec<Vec<Vec<f64>>> {

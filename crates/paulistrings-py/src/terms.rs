@@ -71,7 +71,11 @@ impl PauliTerms {
 
     /// Raise before any width-dependent work if a term reaches past `num_qubits`.
     pub(crate) fn check_width(&self, num_qubits: usize, what: &str) -> PyResult<()> {
-        let max = self.terms.iter().flat_map(|t| t.paulis.iter().map(|&(q, _)| q)).max();
+        let max = self
+            .terms
+            .iter()
+            .flat_map(|t| t.paulis.iter().map(|&(q, _)| q))
+            .max();
         match max {
             Some(q) if q as usize >= num_qubits => Err(PyValueError::new_err(format!(
                 "{what}: qubit index {q} is out of range for {num_qubits} qubits"
@@ -98,7 +102,9 @@ fn factor(value: &Bound<'_, PyAny>, op: &str) -> PyResult<Complex64> {
         )));
     }
     extract_complex(value).map_err(|_| {
-        PyTypeError::new_err(format!("PauliTerms {op} x: x must be a complex or real number"))
+        PyTypeError::new_err(format!(
+            "PauliTerms {op} x: x must be a complex or real number"
+        ))
     })
 }
 
@@ -122,7 +128,12 @@ impl PauliTerms {
 
     fn __add__(&self, other: &Self) -> Self {
         Self {
-            terms: self.terms.iter().cloned().chain(other.terms.iter().cloned()).collect(),
+            terms: self
+                .terms
+                .iter()
+                .cloned()
+                .chain(other.terms.iter().cloned())
+                .collect(),
         }
     }
 
@@ -146,11 +157,15 @@ impl PauliTerms {
     }
 
     fn __neg__(&self) -> Self {
-        Self { terms: self.scaled(Complex64::new(-1.0, 0.0)).collect() }
+        Self {
+            terms: self.scaled(Complex64::new(-1.0, 0.0)).collect(),
+        }
     }
 
     fn __mul__(&self, value: &Bound<'_, PyAny>) -> PyResult<Self> {
-        Ok(Self { terms: self.scaled(factor(value, "*")?).collect() })
+        Ok(Self {
+            terms: self.scaled(factor(value, "*")?).collect(),
+        })
     }
 
     fn __rmul__(&self, value: &Bound<'_, PyAny>) -> PyResult<Self> {
@@ -162,7 +177,9 @@ impl PauliTerms {
         if d == Complex64::new(0.0, 0.0) {
             return Err(PyZeroDivisionError::new_err("PauliTerms / 0"));
         }
-        Ok(Self { terms: self.scaled(Complex64::new(1.0, 0.0) / d).collect() })
+        Ok(Self {
+            terms: self.scaled(Complex64::new(1.0, 0.0) / d).collect(),
+        })
     }
 
     fn __iter__<'py>(&self, py: Python<'py>) -> PyResult<Bound<'py, PyIterator>> {
@@ -195,7 +212,10 @@ impl PauliTerms {
             .collect();
         let rest = self.terms.len().saturating_sub(SHOWN);
         if rest > 0 {
-            parts.push(format!("... ({rest} more term{})", if rest == 1 { "" } else { "s" }));
+            parts.push(format!(
+                "... ({rest} more term{})",
+                if rest == 1 { "" } else { "s" }
+            ));
         }
         parts.join(" + ")
     }
