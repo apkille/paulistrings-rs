@@ -1,5 +1,9 @@
 # Circuits
 
+Once we have an operator, we need a circuit to propagate it through.
+A circuit is the ordered list of gates and noise channels applied to a register.
+This chapter shows how to build one gate by gate or from a Hamiltonian, how to combine circuits, which noise channels are available, and how to import circuits from stim, qiskit and task JSON.
+
 ## Building a circuit
 
 A `Circuit` is an ordered list of channels on a fixed register.
@@ -71,9 +75,9 @@ Every coefficient must be real.
 The error of a first-order step comes from the commutators $[Q_j, Q_k]$, so terms that all commute give an exact step.
 Otherwise $\delta t$ is a second approximation next to the truncation, and a result has to be converged in both ([Validating a result](propagation/validation.md)).
 
-## Composition {#composition}
+## Composition and layers {#composition}
 
-Circuits compose by channel list.
+What if you need to compose circuits?
 `a + b` is a new circuit with `a`'s channels then `b`'s, `a.extend(b)` appends in place, both require equal `num_qubits`, and `len`, indexing and slicing work on the channel list.
 `circuit.adjoint()` reverses the channel order and replaces every gate by its dagger: rotations negate `theta`, `s` becomes `sdg` and back, matrices are conjugate-transposed, and the self-adjoint Cliffords are unchanged.
 
@@ -96,15 +100,14 @@ print([g["name"] for g in whole.adjoint().gates], whole.adjoint().gates[0]["thet
 
 Propagating through `c` in the Heisenberg picture agrees, to floating-point tolerance, with propagating through `c.adjoint()` in the forward picture.
 A noise channel has no adjoint, so `adjoint()` on a circuit containing one raises `ValueError` naming the channel.
-How push order and direction interact is [Push order](propagation/direction.md#push-order).
+How push order and direction interact is [given here](propagation/direction.md#push-order).
 
-## One gate, one truncation point {#one-gate-one-channel}
-
-Throughout this Manual, a layer is one applied channel: one gate, or one noise channel on one qubit or pair, never a brickwork layer of parallel gates.
-Truncation runs after every layer, so `len(circuit)` is the number of truncation points a propagation will pass, and `PropagationStats` has one entry per channel.
-
-Fusing two gates into one `unitary_2q` therefore changes the answer, because it removes a truncation point between them.
-A broadcast call or a Trotter step is still one channel per target or term: `depolarize(p, [0, 1, 2])` pushes three channels.
+<a id="one-gate-one-channel"></a>
+Every channel in the list is one gate, or one noise channel on one qubit or pair.
+We call each applied channel a layer; this is not a brickwork layer of parallel gates.
+Truncation runs after every layer, so `len(circuit)` is the number of truncation points a propagation passes, and `PropagationStats` has one entry per channel.
+For the same reason, fusing two gates into one `unitary_2q` changes the answer, since it removes the truncation point between them.
+A broadcast call or a Trotter step still adds one channel per target or term:
 
 ```python
 noisy = Circuit(3)
@@ -117,7 +120,7 @@ print(len(noisy))
 4
 ```
 
-Why a truncation point between gates matters is [A gate is a truncation point](propagation/truncation.md#a-gate-is-a-truncation-point).
+Why a truncation point between gates matters is explained in [A gate is a truncation point](propagation/truncation.md#a-gate-is-a-truncation-point).
 
 ## Noise channels {#noise-channels}
 
@@ -207,9 +210,8 @@ Importer signatures are in [Circuit](../library/circuit.md#importing-a-circuit).
 
 ## Support on more than two qubits
 
-The engine applies a channel through a lookup on its support, capped at two qubits; a channel on three or more makes `propagate` panic.
+The engine applies a channel through a lookup on its support, capped at two qubits.
 `pauli_rotation` is the exception and accepts a generator of any weight.
-From Python the constructors keep you inside this limit: every named gate and noise channel acts on one or two qubits, and the importers reject wider instructions with `ValueError`.
 
 ## See it in use
 
