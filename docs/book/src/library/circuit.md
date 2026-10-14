@@ -72,6 +72,14 @@ See [Noise channels](../manual/circuits.md#noise-channels) for a worked example.
 Per gate: `rz`/`rx`/`ry`/`pauli_rotation` negate `theta`, `s` becomes `sdg` (and back), `unitary_1q`/`unitary_2q` conjugate-transpose, and `h`/`x`/`y`/`z`/`cnot`/`cz`/`swap` are self-adjoint.
 A non-unitary channel (a noise channel) raises `ValueError` naming it.
 
+## Trotter steps
+
+`circuit.trotter(terms, dt, order=1)` appends one Trotter step of $e^{-iH\,dt}$ for a `PauliTerms` $H = \sum_k h_k Q_k$.
+`order=1` pushes one `pauli_rotation` per term with `theta = 2*h_k*dt`, in term order.
+`order=2` pushes the symmetric product: every term but the last at `dt/2`, the last at `dt`, then the others in reverse order at `dt/2`.
+Every coefficient must be real, and the call pushes all of its channels or none.
+`paulistrings.trotter(H, dt, num_qubits, steps=1, order=1)` returns a new circuit of `steps` such steps.
+
 ## Importing a circuit
 
 | Call | Source |
